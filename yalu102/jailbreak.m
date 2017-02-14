@@ -95,7 +95,7 @@ uint64_t WriteAnywhere32(uint64_t addr, uint32_t val) {
 
 #import "pte_stuff.h"
 
-void exploit(void* btn, mach_port_t pt, uint64_t kernbase, uint64_t allprocs)
+void exploit(void* btn, mach_port_t pt, uint64_t kernbase, uint64_t allprocs, BOOL dropbearEnable, BOOL reextractBootstrap)
 {
     io_iterator_t iterator;
     IOServiceGetMatchingServices(kIOMasterPortDefault, IOServiceMatching("IOSurfaceRoot"), &iterator);
@@ -850,7 +850,9 @@ remappage[remapcnt++] = (x & (~PMK));\
             
             
             int f = open("/.installed_yaluX", O_RDONLY);
-            
+            if(reextractBootstrap == TRUE) {
+                f = -1;
+            }
             if (f == -1) {
                 NSString* tar = [execpath stringByAppendingPathComponent:@"tar"];
                 NSString* bootstrap = [execpath stringByAppendingPathComponent:@"bootstrap.tar"];
@@ -912,12 +914,21 @@ remappage[remapcnt++] = (x & (~PMK));\
                 chown("/Library/LaunchDaemons/0.reload.plist", 0, 0);
             }
             {
-                NSString* jlaunchctl = [execpath stringByAppendingPathComponent:@"dropbear.plist"];
-                char* jl = [jlaunchctl UTF8String];
-                unlink("/Library/LaunchDaemons/dropbear.plist");
-                copyfile(jl, "/Library/LaunchDaemons/dropbear.plist", 0, COPYFILE_ALL);
-                chmod("/Library/LaunchDaemons/dropbear.plist", 0644);
-                chown("/Library/LaunchDaemons/dropbear.plist", 0, 0);
+                if(dropbearEnable == TRUE) {
+                    NSString* jlaunchctl = [execpath stringByAppendingPathComponent:@"dropbear_enabled.plist"];
+                    char* jl = [jlaunchctl UTF8String];
+                    unlink("/Library/LaunchDaemons/dropbear.plist");
+                    copyfile(jl, "/Library/LaunchDaemons/dropbear.plist", 0, COPYFILE_ALL);
+                    chmod("/Library/LaunchDaemons/dropbear.plist", 0644);
+                    chown("/Library/LaunchDaemons/dropbear.plist", 0, 0);
+                } else {
+                    NSString* jlaunchctl = [execpath stringByAppendingPathComponent:@"dropbear_disabled.plist"];
+                    char* jl = [jlaunchctl UTF8String];
+                    unlink("/Library/LaunchDaemons/dropbear.plist");
+                    copyfile(jl, "/Library/LaunchDaemons/dropbear.plist", 0, COPYFILE_ALL);
+                    chmod("/Library/LaunchDaemons/dropbear.plist", 0644);
+                    chown("/Library/LaunchDaemons/dropbear.plist", 0, 0);
+                }
             }
             unlink("/System/Library/LaunchDaemons/com.apple.mobile.softwareupdated.plist");
             

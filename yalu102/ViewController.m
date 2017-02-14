@@ -25,13 +25,38 @@ typedef struct {
 } sprz;
 
 @interface ViewController ()
+@property (retain, nonatomic) IBOutlet UIView *jailbreakView;
+@property (retain, nonatomic) IBOutlet UIView *recoveryView;
+@property (retain, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (retain, nonatomic) IBOutlet UISwitch *dropbearSwitch;
+@property (retain, nonatomic) IBOutlet UISwitch *reextractSwitch;
 
 @end
 
 @implementation ViewController
+- (IBAction)segmentValueChanged:(UISegmentedControl *)sender {
+    switch(sender.selectedSegmentIndex){
+        case 0:
+            self.jailbreakView.hidden = NO;
+            self.recoveryView.hidden = YES;
+            break;
+        case 1:
+            self.jailbreakView.hidden = YES;
+            self.recoveryView.hidden = NO;
+            break;
+        default:
+            break;
+    }
+
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.jailbreakView.alpha = 1;
+    self.jailbreakView.hidden = NO;
+    self.recoveryView.hidden = YES;
+    self.recoveryView.alpha = 1;
+    
     init_offsets();
     struct utsname u = { 0 };
     uname(&u);
@@ -371,8 +396,8 @@ gotclock:;
     extern uint64_t slide;
     slide = kernel_base - 0xFFFFFFF007004000;
     
-    void exploit(void*, mach_port_t, uint64_t, uint64_t);
-    exploit(sender, pt, kernel_base, allproc_offset);
+    void exploit(void*, mach_port_t, uint64_t, uint64_t, BOOL, BOOL);
+    exploit(sender, pt, kernel_base, allproc_offset, self.dropbearSwitch.isOn, self.reextractSwitch.isOn);
     [dope setEnabled:NO];
     [dope setTitle:@"already jailbroken" forState:UIControlStateDisabled];
 
@@ -384,4 +409,12 @@ gotclock:;
 }
 
 
+- (void)dealloc {
+    [_jailbreakView release];
+    [_recoveryView release];
+    [_dropbearSwitch release];
+    [_segmentedControl release];
+    [_reextractSwitch release];
+    [super dealloc];
+}
 @end
