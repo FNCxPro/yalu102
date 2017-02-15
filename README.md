@@ -4,7 +4,10 @@
 
 A "work in progress" iOS jailbreak for 64-bit devices created by [qwertyoruiopz](https://twitter.com/qwertyoruiopz) and [marcograssi](marcograss).
 
-Please use the "Issues" tab for **code related** issues only. If you need support please search on [/r/jailbreak](https://reddit.com/r/jailbreak) before posting a question there.
+Please use the "Issues" tab for **code related** issues only. If you need support please search on [/r/jailbreak](https://reddit.com/r/jailbreak) before posting a question there.  
+
+This uses a new UI created by me, based off of the [concept UI from /u/xnuos](https://www.reddit.com/r/jailbreak/comments/5sk6ib/discussion_new_yalu_interface_10_102_w_recovery/)
+
 
 ## Supported Devices and iOS versions
 
